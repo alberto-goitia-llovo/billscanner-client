@@ -14,7 +14,9 @@ export class LoginService {
     console.log('email', email)
     console.log("Requesting access");
     try {
-      let result = await this.rest.get('/api/auth/signin', { email, password });
+      return;
+      let result = await this.rest.
+        get('/api/auth/signin', { email, password });
       console.log('result', result)
     } catch (error) {
       //TODO: hacer un servicio que haga un pop-up de error
