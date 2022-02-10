@@ -9,6 +9,7 @@ export class LoggerService {
   constructor() { }
 
   public logWithTime(message: any) {
+    console.log("logging with time")
     if (!environment.web_logger) return;
     if (message) console.log(`[${new Date().toLocaleString()}] ${message}`);
   }

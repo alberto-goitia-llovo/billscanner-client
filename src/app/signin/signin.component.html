@@ -19,5 +19,6 @@
             </mat-error>
         </mat-form-field>
     </form>
-    <button mat-raised-button color="primary">Signin</button>
+    <button mat-raised-button color="primary" (click)="signin()"
+        [disabled]="emailFormControl.invalid || passwdFormControl.invalid">Signin</button>
 </div>

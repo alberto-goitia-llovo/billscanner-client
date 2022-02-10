@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroupDirective, NgForm, Validators } from '@angular/forms';
 import { ErrorStateMatcher } from '@angular/material/core';
+import { LoginService } from 'src/services/login.service';
+
 
 /** Error when invalid control is dirty, touched, or submitted. */
 export class MyErrorStateMatcher implements ErrorStateMatcher {
@@ -18,16 +20,20 @@ export class MyErrorStateMatcher implements ErrorStateMatcher {
 })
 export class SignupComponent implements OnInit {
 
-  constructor() { }
+  constructor(private login: LoginService) { }
+
+  userFormControl = new FormControl('', [Validators.required]);
+  emailFormControl = new FormControl('', [Validators.required, Validators.email]);
+  passwdFormControl = new FormControl('', [Validators.required]);
 
   ngOnInit(): void {
   }
 
-  emailFormControl = new FormControl('', [Validators.required, Validators.email]);
-  passwdFormControl = new FormControl('', [Validators.required]);
-  userFormControl = new FormControl('', [Validators.required]);
-
   matcher = new MyErrorStateMatcher();
+
+  async signup(): Promise<void> {
+    await this.login.signup(this.userFormControl.value, this.emailFormControl.value, this.passwdFormControl.value);
+  }
 }
 
 
