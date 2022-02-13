@@ -22,60 +22,43 @@ export class RestService {
   IP_SERVER = environment.ip_server;
 
 
-  get<T>(url: string, params = {}): Promise<T> {
-
+  get<T>(url: string, params = {}): Observable<T> {
     let full_url = this.IP_SERVER + url;
-    return new Promise((resolve, reject) => {
-      this.http.get<T>(full_url, { params, headers: this.httpOptions.headers }).pipe(
-        tap(_ => this.logger.logWithTime(`GET ${full_url}`)),
-        catchError(this.handleError<T>("GET"))
-      ).subscribe((res) => resolve(res))
-    })
+    return this.http.get<T>(full_url, { params, headers: this.httpOptions.headers }).pipe(
+      tap(_ => this.logger.logWithTime(`GET ${full_url}`)),
+    )
   }
 
-  post<T>(url: string, body = {}): Promise<T> {
+  post<T>(url: string, body = {}): Observable<T> {
     let full_url = this.IP_SERVER + url;
-    return new Promise((resolve, reject) => {
-      // this.http.post<T>(full_url, body, { headers: this.httpOptions.headers }).pipe(
-      //   tap(_ => this.logger.logWithTime(`POST ${full_url}`)),
-      //   catchError(this.handleError<T>("POST"))
-      // ).subscribe((res) => resolve(res))
-      this.http.post<T>(full_url, body, { headers: this.httpOptions.headers })
-        .pipe(
-          tap(_ => this.logger.logWithTime(`POST ${full_url}`)),
-          catchError(this.handleError<T>("POST"))
-        )
-        .toPromise()
-        .then(resolve)
-        .catch((err) => {
-          reject(err.error)
-        })
-    })
+    return this.http.post<T>(full_url, body, { headers: this.httpOptions.headers })
+      .pipe(
+        tap(_ => this.logger.logWithTime(`POST ${full_url}`)),
+      )
   }
 
-  delete<T>(url: string, params = {}): Promise<T> {
+  delete<T>(url: string, params = {}): Observable<T> {
     let full_url = this.IP_SERVER + url;
-    return new Promise((resolve) => {
-      this.http.delete<T>(full_url, { params, headers: this.httpOptions.headers }).pipe(
-        tap(_ => this.logger.logWithTime(`DELETE ${full_url}`)),
-        catchError(this.handleError<T>("DELETE"))
-      ).subscribe((res) => resolve(res))
-    })
+    return this.http.delete<T>(full_url, { params, headers: this.httpOptions.headers }).pipe(
+      tap(_ => this.logger.logWithTime(`DELETE ${full_url}`)),
+    )
   }
 
-  put<T>(url: string, params = {}): Promise<T> {
+  put<T>(url: string, params = {}): Observable<T> {
     let full_url = this.IP_SERVER + url;
-    return new Promise((resolve) => {
-      this.http.put<T>(full_url, { params, headers: this.httpOptions.headers }).pipe(
-        tap(_ => this.logger.logWithTime(`PUT ${full_url}`)),
-        catchError(this.handleError<T>("PUT"))
-      ).subscribe((res) => resolve(res))
-    })
+    return this.http.put<T>(full_url, { params, headers: this.httpOptions.headers }).pipe(
+      tap(_ => this.logger.logWithTime(`PUT ${full_url}`)),
+    )
   }
 
   /**
    * Handle Http operation that failed.
    * Let the app continue.
+   * 
+   * @note Won't be using this function but it stays here in case needed.
+   * All the REST operations will be transformed from observables to promises
+   * and handled at the specific service that made the request (for convenience)
+   * 
    * @param operation - name of the operation that failed
    * @param result - optional value to return as the observable result
    */
@@ -83,10 +66,71 @@ export class RestService {
     return (error: any): Observable<T> => {
       // TODO: send the error to remote logging infrastructure
       this.logger.log(`${operation} failed`);
-      throw new Error(error);
-      // console.error(error); // log to console instead
-      // // Let the app keep running by returning an empty result.
-      // return of(result as T);
+      console.error(error); // log to console instead
+      // Let the app keep running by returning an empty result.
+      return of(result as T);
     };
   }
 }
+
+//USING PROMISES, ANTIPATTERN
+// get<T>(url: string, params = {}): Promise<T> {
+//   let full_url = this.IP_SERVER + url;
+//   return new Promise((resolve, reject) => {
+//     this.http.get<T>(full_url, { params, headers: this.httpOptions.headers }).pipe(
+//       tap(_ => this.logger.logWithTime(`GET ${full_url}`)),
+//     )
+//       .toPromise()
+//       .then(resolve)
+//       .catch((err) => {
+//         this.logger.logWithTime(`POST failed`)
+//         reject(err.error)
+//       })
+//   })
+// }
+
+// post<T>(url: string, body = {}): Promise<T> {
+//   let full_url = this.IP_SERVER + url;
+//   return new Promise((resolve, reject) => {
+//     this.http.post<T>(full_url, body, { headers: this.httpOptions.headers })
+//       .pipe(
+//         tap(_ => this.logger.logWithTime(`POST ${full_url}`)),
+//       )
+//       .toPromise()
+//       .then(resolve)
+//       .catch((err) => {
+//         this.logger.logWithTime(`POST failed`)
+//         reject(err.error)
+//       })
+//   })
+// }
+
+// delete<T>(url: string, params = {}): Promise<T> {
+//   let full_url = this.IP_SERVER + url;
+//   return new Promise((resolve, reject) => {
+//     this.http.delete<T>(full_url, { params, headers: this.httpOptions.headers }).pipe(
+//       tap(_ => this.logger.logWithTime(`DELETE ${full_url}`)),
+//     )
+//       .toPromise()
+//       .then(resolve)
+//       .catch((err) => {
+//         this.logger.logWithTime(`POST failed`)
+//         reject(err.error)
+//       })
+//   })
+// }
+
+// put<T>(url: string, params = {}): Promise<T> {
+//   let full_url = this.IP_SERVER + url;
+//   return new Promise((resolve, reject) => {
+//     this.http.put<T>(full_url, { params, headers: this.httpOptions.headers }).pipe(
+//       tap(_ => this.logger.logWithTime(`PUT ${full_url}`)),
+//     )
+//       .toPromise()
+//       .then(resolve)
+//       .catch((err) => {
+//         this.logger.logWithTime(`POST failed`)
+//         reject(err.error)
+//       })
+//   })
+// }

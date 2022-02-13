@@ -4,6 +4,7 @@ import { ErrorStateMatcher } from '@angular/material/core';
 import { LoginService } from 'src/services/login.service';
 
 
+
 /** Error when invalid control is dirty, touched, or submitted. */
 export class MyErrorStateMatcher implements ErrorStateMatcher {
   isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
@@ -20,7 +21,9 @@ export class MyErrorStateMatcher implements ErrorStateMatcher {
 })
 export class SignupComponent implements OnInit {
 
-  constructor(private login: LoginService) { }
+  constructor(
+    private login: LoginService,
+  ) { }
 
   userFormControl = new FormControl('', [Validators.required]);
   emailFormControl = new FormControl('', [Validators.required, Validators.email]);
@@ -31,8 +34,14 @@ export class SignupComponent implements OnInit {
 
   matcher = new MyErrorStateMatcher();
 
-  async signup(): Promise<void> {
-    await this.login.signup(this.userFormControl.value, this.emailFormControl.value, this.passwdFormControl.value);
+  signup(): void {
+    this.login.signup(this.userFormControl.value, this.emailFormControl.value, this.passwdFormControl.value)
+      .subscribe((data) => {
+        if (data?.data) {
+          console.log('data?.data', data?.data)
+          localStorage.setItem('token', data.data.token)
+        }
+      })
   }
 }
 

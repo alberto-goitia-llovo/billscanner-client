@@ -4,3 +4,32 @@ body, html {
 }
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+/* Snackbars */
+.mat-simple-snackbar-action {
+  color: black;
+}
+/* Error snackbar*/
+.error-snackbar {
+    color: white;
+    background-color: rgb(202, 53, 53);
+}
+
+/* Success snackbar*/
+.success-snackbar {
+  color: white;
+  background-color: rgb(32, 138, 111);
+}
+
+/* Info snackbar*/
+.info-snackbar {
+  color: white;
+  background-color: rgb(124, 123, 123);
+}
+
+/* Warning snackbar*/
+.warning-snackbar {
+  color: white;
+  background-color: #d3b823;
+}
+

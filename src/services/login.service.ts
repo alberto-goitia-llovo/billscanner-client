@@ -1,6 +1,15 @@
 import { Injectable } from '@angular/core';
 import { RestService } from './rest.service';
 import { AlertService } from './alert.service';
+import { Observable, of } from 'rxjs';
+import { catchError, map, tap } from 'rxjs/operators';
+import { LoggerService } from './logger.service';
+
+const handledErrorMessages: any = {
+  "User already exists": { message: 'This user already exists. Please login.' },
+  "Invalid Password": { message: 'Invalid password' },
+  "User not registered": { message: 'User not registered' }
+}
 
 @Injectable({
   providedIn: 'root'
@@ -8,29 +17,33 @@ import { AlertService } from './alert.service';
 export class LoginService {
   constructor(
     private rest: RestService,
-    private alerter: AlertService
+    private alerter: AlertService,
   ) { }
 
-  async signin(email: string, password: string): Promise<void> {
-    console.log('email', email)
-    console.log('password', password)
-    console.log("Requesting access");
-    try {
-      return;
-    } catch (error) {
-      //TODO: hacer un servicio que haga un pop-up de error
-      alert(error);
-    }
+  signin(email: string, password: string): Observable<any> {
+    return this.rest.post('/api/auth/signin', { email, password })
+      .pipe(
+        catchError(this.handleError())
+      )
   }
 
-  async signup(name: string, email: string, password: string): Promise<void> {
-    try {
-      let result = await this.rest.post('/api/auth/signup', { name, email, password });
-      console.log('result', result)
-    } catch (error) {
-      console.log('error', error)
-      //TODO: hacer un servicio que haga un pop-up de error
-      this.alerter.popAlert("ERROR", false);
-    }
+  signup(name: string, email: string, password: string): Observable<any> {
+    return this.rest.post('/api/auth/signup', { name, email, password })
+      .pipe(
+        catchError(this.handleError())
+      )
+  }
+
+  private handleError<T>(result?: T) {
+    return (error: any): Observable<T> => {
+      console.error(error); // log to console instead
+      if (handledErrorMessages[error?.error?.message]) {
+        this.alerter.queueAlert(handledErrorMessages[error?.error?.message].message, 'error')
+      } else {
+        this.alerter.queueAlert("An error has occurred", 'error')
+      }
+      // Let the app keep running by returning an empty result.
+      return of(result as T);
+    };
   }
 }
