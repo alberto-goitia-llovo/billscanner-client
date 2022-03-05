@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroupDirective, NgForm, Validators } from '@angular/forms';
 import { ErrorStateMatcher } from '@angular/material/core';
-import { LoginService } from 'src/services/login.service';
+import { AuthService } from 'src/services/auth.service';
 import { AlertService } from '../../services/alert.service';
+import { Router } from '@angular/router';
 
 
 /** Error when invalid control is dirty, touched, or submitted. */
@@ -22,7 +23,8 @@ export class MyErrorStateMatcher implements ErrorStateMatcher {
 export class SigninComponent implements OnInit {
 
   constructor(
-    private login: LoginService,
+    private login: AuthService,
+    private router: Router
   ) { }
 
   ngOnInit(): void {
@@ -37,6 +39,9 @@ export class SigninComponent implements OnInit {
   async signin(): Promise<void> {
     await this.login.signin(this.emailFormControl.value, this.passwdFormControl.value).subscribe((data) => {
       console.log(data);
+      if (data) {
+        this.router.navigate(["welcome"]);
+      }
     })
   }
 }

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroupDirective, NgForm, Validators } from '@angular/forms';
 import { ErrorStateMatcher } from '@angular/material/core';
-import { LoginService } from 'src/services/login.service';
+import { AuthService } from 'src/services/auth.service';
 
 
 
@@ -22,7 +22,7 @@ export class MyErrorStateMatcher implements ErrorStateMatcher {
 export class SignupComponent implements OnInit {
 
   constructor(
-    private login: LoginService,
+    private login: AuthService,
   ) { }
 
   userFormControl = new FormControl('', [Validators.required]);
