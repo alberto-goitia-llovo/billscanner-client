@@ -16,9 +16,10 @@ const handledErrorMessages: any = {
   providedIn: 'root'
 })
 export class AuthService {
-  private currentUserSubject: BehaviorSubject<any> = new BehaviorSubject<any>(localStorage.getItem('currentUser'));
-  public currentUser: Observable<any> = this.currentUserSubject.asObservable();
-  private holamundo: string = 'hola mundo';
+  private currentUserSubject: BehaviorSubject<any>;
+  public currentUser: Observable<any>;
+  private currentTokenSubject: BehaviorSubject<any>;
+  public currentToken: Observable<any>;
 
   constructor(
     private rest: RestService,
@@ -27,11 +28,11 @@ export class AuthService {
   ) {
     this.currentUserSubject = new BehaviorSubject<any>(localStorage.getItem('currentUser'));
     this.currentUser = this.currentUserSubject.asObservable();
-    this.holamundo = 'hello world';
+    this.currentTokenSubject = new BehaviorSubject<any>(String(localStorage.getItem('token')));
+    this.currentToken = this.currentTokenSubject.asObservable();
   }
 
   signin(email: string, password: string): Observable<any> {
-    console.log("Estamos dentro de signin --> ", this.holamundo);
     return this.rest.post('/api/auth/signin', { email, password })
       .pipe(
         map((data: any) => {
@@ -58,20 +59,28 @@ export class AuthService {
     localStorage.removeItem('currentUser');
     localStorage.removeItem('token');
     this.currentUserSubject.next(null);
+    this.currentTokenSubject.next(null);
     this.router.navigate(['/login']);
   }
 
   storeCredentials(data: any) {
     let user = data?.data?.user;
+    console.log('STORE user', user)
     let token = data?.data?.token;
+    console.log('STORE token', token)
     localStorage.setItem('currentUser', JSON.stringify(user));
-    localStorage.setItem('token', JSON.stringify(token));
+    localStorage.setItem('token', token);
     this.currentUserSubject.next(user);
+    this.currentTokenSubject.next(token);
     return user;
   }
 
   public get currentUserValue(): any {
     return this.currentUserSubject.value;
+  }
+
+  public get currentTokenValue(): any {
+    return this.currentTokenSubject.value;
   }
 
 
