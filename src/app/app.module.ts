@@ -24,6 +24,7 @@ import { MatIconModule } from '@angular/material/icon';
 
 //OTHER
 import { JwtInterceptor } from '../helpers/jwt.interceptor';
+import { ErrorInterceptor } from '../helpers/error.interceptor';
 
 
 @NgModule({
@@ -51,6 +52,7 @@ import { JwtInterceptor } from '../helpers/jwt.interceptor';
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
+    { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
   ],
   bootstrap: [AppComponent]
 })

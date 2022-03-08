@@ -38,7 +38,6 @@ export class SigninComponent implements OnInit {
 
   async signin(): Promise<void> {
     await this.login.signin(this.emailFormControl.value, this.passwdFormControl.value).subscribe((data) => {
-      console.log(data);
       if (data) {
         this.router.navigate(["welcome"]);
       }

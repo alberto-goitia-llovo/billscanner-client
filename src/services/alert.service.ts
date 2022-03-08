@@ -2,6 +2,9 @@ import { Injectable } from '@angular/core';
 import { MatSnackBar, MatSnackBarConfig } from '@angular/material/snack-bar';
 
 export type AlertType = "error" | "warning" | "success" | "info";
+export type InterceptedAlerts = {
+  [errorMessage: string]: { message: string, type: AlertType }
+};
 
 const closeIcon = '<mat-icon aria-hidden="false" aria-label="Example home icon">home</mat-icon>'
 

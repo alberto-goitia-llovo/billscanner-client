@@ -20,7 +20,7 @@ export class WelcomeComponent implements OnInit {
     this.rest.get('/api/test/testdata').subscribe((data: any) => {
       console.log('data', data)
       this.alert.queueAlert(data.data, "info")
-    }, err => { console.log(err, 'error') })
+    })
   }
 
   tosheetreader() {
