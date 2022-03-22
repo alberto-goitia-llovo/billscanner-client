@@ -109,7 +109,6 @@ import { VirtualScrollerModule } from 'primeng/virtualscroller';
 import { JwtInterceptor } from '../helpers/jwt.interceptor';
 import { ErrorInterceptor } from '../helpers/error.interceptor';
 
-
 @NgModule({
   declarations: [
     AppComponent,

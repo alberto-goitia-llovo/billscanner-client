@@ -1,25 +1,17 @@
 import { Component } from '@angular/core';
-import { AuthService } from '../services/auth.service';
-import { Router } from '@angular/router';
-
+import { PrimeNGConfig } from 'primeng/api';
 @Component({
   selector: 'app-root',
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css']
+  templateUrl: './app.component.html'
 })
 export class AppComponent {
-  title = 'billscanner-client';
-  constructor(
-    public auth: AuthService,
-    private router: Router
-  ) { }
 
-  tosheetreader() {
-    this.router.navigate(['/sheet-reader']);
-  }
+  menuMode = 'static';
 
-  towelcome() {
-    this.router.navigate(['/welcome']);
+  constructor(private primengConfig: PrimeNGConfig) { }
+
+  ngOnInit() {
+    this.primengConfig.ripple = true;
+    document.documentElement.style.fontSize = '14px';
   }
 }
-

@@ -1,23 +1,52 @@
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
-import { MenuItem } from 'primeng/api';
-
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { ConfigService } from '../../services/app.config.service';
+import { AppConfig } from '../../interfaces/appconfig';
+import { Subscription } from 'rxjs';
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
-  encapsulation: ViewEncapsulation.None
+  styles: [`
+    :host ::ng-deep .p-password input {
+    width: 100%;
+    padding:1rem;
+    }
+
+    :host ::ng-deep .pi-eye{
+      transform:scale(1.6);
+      margin-right: 1rem;
+      color: var(--primary-color) !important;
+    }
+
+    :host ::ng-deep .pi-eye-slash{
+      transform:scale(1.6);
+      margin-right: 1rem;
+      color: var(--primary-color) !important;
+    }
+  `]
 })
-export class LoginComponent implements OnInit {
+export class LoginComponent implements OnInit, OnDestroy {
 
-  constructor() { }
+  valCheck: string[] = ['remember'];
 
-  routeItems: MenuItem[];
+  password: string;
+
+  config: AppConfig;
+
+  subscription: Subscription;
+
+  constructor(public configService: ConfigService) { }
+  // constructor() { }
 
   ngOnInit(): void {
-    this.routeItems = [
-      { label: 'Signin', routerLink: 'signin' },
-      { label: 'Signup', routerLink: 'signup' },
-    ];
+    // this.config = this.configService.config;
+    // this.subscription = this.configService.configUpdate$.subscribe(config => {
+    //   this.config = config;
+    // });
   }
 
-
+  ngOnDestroy(): void {
+    // if (this.subscription) {
+    //   this.subscription.unsubscribe();
+    // }
+  }
 }

@@ -6,10 +6,11 @@ import { SheetReaderComponent } from './sheet-reader/sheet-reader.component';
 import { WelcomeComponent } from './welcome/welcome.component';
 
 const routes: Routes = [
+  // { path: '', redirectTo: '/login', pathMatch: 'full' },
   { path: '', redirectTo: '/login', pathMatch: 'full' },
-  { path: 'login', component: LoginComponent, loadChildren: () => import('./login/login.module').then(m => m.LoginModule) },
+  { path: 'login', component: LoginComponent },
   { path: 'sheet-reader', component: SheetReaderComponent, canActivate: [AuthGuard] },
-  { path: 'welcome', component: WelcomeComponent, canActivate: [AuthGuard] }
+  { path: 'welcome', component: WelcomeComponent, canActivate: [AuthGuard] },
 ];
 
 @NgModule({
