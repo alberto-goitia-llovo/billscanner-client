@@ -2,6 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ConfigService } from '../../services/app.config.service';
 import { AppConfig } from '../../interfaces/appconfig';
 import { Subscription } from 'rxjs';
+import { Router } from '@angular/router';
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
@@ -34,7 +35,10 @@ export class LoginComponent implements OnInit, OnDestroy {
 
   subscription: Subscription;
 
-  constructor(public configService: ConfigService) { }
+  constructor(
+    public configService: ConfigService,
+    public router: Router
+  ) { }
   // constructor() { }
 
   ngOnInit(): void {
@@ -48,5 +52,9 @@ export class LoginComponent implements OnInit, OnDestroy {
     // if (this.subscription) {
     //   this.subscription.unsubscribe();
     // }
+  }
+
+  signin() {
+    this.router.navigate(["pages/dashboard"]);
   }
 }

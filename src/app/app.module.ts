@@ -5,15 +5,6 @@ import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
-//Custom components
-import { AppRoutingModule } from './app-routing.module';
-import { AppComponent } from './app.component';
-import { SheetReaderComponent } from './sheet-reader/sheet-reader.component';
-import { LoginComponent } from './login/login.component';
-import { WelcomeComponent } from './welcome/welcome.component';
-import { SignupComponent } from './signup/signup.component';
-import { SigninComponent } from './signin/signin.component';
-
 //Angular material components
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatInputModule } from '@angular/material/input';
@@ -21,6 +12,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatButtonModule } from '@angular/material/button';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatIconModule } from '@angular/material/icon';
+
 
 //PRIMENG
 import { StyleClassModule } from 'primeng/styleclass';
@@ -105,18 +97,45 @@ import { TreeSelectModule } from 'primeng/treeselect';
 import { TreeTableModule } from 'primeng/treetable';
 import { VirtualScrollerModule } from 'primeng/virtualscroller';
 
-//OTHER
+//HELPERS
 import { JwtInterceptor } from '../helpers/jwt.interceptor';
 import { ErrorInterceptor } from '../helpers/error.interceptor';
+
+//MAIN COMPONENTS
+import { AppRoutingModule } from './app-routing.module';
+import { AppComponent } from './app.component';
+import { LoginComponent } from './login/login.component';
+
+//PAGE LAYOUT
+import { AppTopBarComponent } from './page_layout/app.topbar.component';
+import { AppFooterComponent } from './page_layout/app.footer.component';
+import { AppConfigComponent } from './page_layout/app.config.component';
+import { AppMainComponent } from './page_layout/app.main.component';
+import { AppMenuComponent } from './page_layout/app.menu.component';
+import { AppMenuitemComponent } from './page_layout/app.menuitem.component';
+
+//PAGE CONTENT
+import { DashboardComponent } from './page_content/dashboard/dashboard.component';
+import { AccountsComponent } from './page_content/accounts/accounts.component';
+import { CategoriesComponent } from './page_content/categories/categories.component';
+import { ObjectivesComponent } from './page_content/objectives/objectives.component';
+import { LedgerComponent } from './page_content/ledger/ledger.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    SheetReaderComponent,
     LoginComponent,
-    WelcomeComponent,
-    SignupComponent,
-    SigninComponent,
+    AppMainComponent,
+    AppMenuComponent,
+    AppMenuitemComponent,
+    AppConfigComponent,
+    AppTopBarComponent,
+    AppFooterComponent,
+    DashboardComponent,
+    AccountsComponent,
+    CategoriesComponent,
+    ObjectivesComponent,
+    LedgerComponent,
   ],
   imports: [
     BrowserModule,
