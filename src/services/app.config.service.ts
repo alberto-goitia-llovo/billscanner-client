@@ -8,8 +8,8 @@ import { AppConfig } from '../interfaces/appconfig';
 export class ConfigService {
 
     config: AppConfig = {
-        theme: 'lara-light-indigo',
-        dark: false,
+        theme: 'vela-blue',
+        dark: true,
         inputStyle: 'outlined',
         ripple: true
     };
@@ -20,6 +20,7 @@ export class ConfigService {
 
     updateConfig(config: AppConfig) {
         this.config = config;
+        console.log("UPDATE CONFIG DESDE CONFIG SERVICE", this.config);
         this.configUpdate.next(config);
     }
 

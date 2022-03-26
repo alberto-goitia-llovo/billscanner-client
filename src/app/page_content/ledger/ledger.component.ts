@@ -11,6 +11,7 @@ export class LedgerComponent implements OnInit {
   constructor() { }
 
   ngOnInit(): void {
+    console.log('LEDGER STARTED')
   }
 
 }

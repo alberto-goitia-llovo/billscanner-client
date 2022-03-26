@@ -18,11 +18,16 @@
             <i class="pi pi-calendar"></i>
             <span>Calendar</span>
         </a> -->
-        <a href="#" class="p-link layout-topbar-button">
+        <!-- <a href="#" class="p-link layout-topbar-button">
             <i class="pi pi-cog"></i>
             <span>Settings</span>
-        </a>
-        <a href="#" class="p-link layout-topbar-button">
+        </a> -->
+
+        <!-- <p-inputSwitch [(ngModel)]="dark_mode" style="border: 1px solid red"></p-inputSwitch> -->
+        <h4 class="text-center align-center m-auto mr-1">Dark Mode</h4>
+        <p-inputSwitch [(ngModel)]="dark_mode" (onChange)="toggleDarkMode()">
+        </p-inputSwitch>
+        <a href=" #" class="p-link layout-topbar-button">
             <i class="pi pi-user"></i>
             <span>Profile</span>
         </a>

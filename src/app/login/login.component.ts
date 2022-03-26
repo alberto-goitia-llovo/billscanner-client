@@ -39,13 +39,16 @@ export class LoginComponent implements OnInit, OnDestroy {
     public configService: ConfigService,
     public router: Router
   ) { }
-  // constructor() { }
 
   ngOnInit(): void {
     // this.config = this.configService.config;
-    // this.subscription = this.configService.configUpdate$.subscribe(config => {
-    //   this.config = config;
-    // });
+    this.config = this.configService.getConfig();
+    console.log('this.config', this.config)
+    this.subscription = this.configService.configUpdate$.subscribe(config => {
+      this.config = config;
+      console.log("LA CONFIG HA CAMBIADOO EN EL LOGIIN", this.config);
+      console.log("LA DEL SERVICIO ES", this.configService.getConfig())
+    });
   }
 
   ngOnDestroy(): void {
@@ -55,6 +58,8 @@ export class LoginComponent implements OnInit, OnDestroy {
   }
 
   signin() {
-    this.router.navigate(["pages/dashboard"]);
+    console.log("nos vamos a ", 'pages')
+    this.router.navigate(['pages']);
   }
+
 }

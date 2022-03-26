@@ -11,6 +11,7 @@ export class ObjectivesComponent implements OnInit {
   constructor() { }
 
   ngOnInit(): void {
+    console.log('OBJECTIVES COMPONENT')
   }
 
 }

@@ -10,8 +10,6 @@ import { ObjectivesComponent } from './page_content/objectives/objectives.compon
 import { LedgerComponent } from './page_content/ledger/ledger.component';
 
 const routes: Routes = [
-  { path: '', redirectTo: '/login', pathMatch: 'full' },
-  { path: 'login', component: LoginComponent },
   {
     path: 'pages', component: AppMainComponent,
     children: [
@@ -23,6 +21,8 @@ const routes: Routes = [
       { path: 'objectives', component: ObjectivesComponent },
     ]
   },
+  { path: 'login', component: LoginComponent },
+  { path: '**', redirectTo: 'login' },
 ]
 
 @NgModule({
