@@ -4,7 +4,7 @@ import { AppConfig } from '../../interfaces/appconfig';
 import { Subscription } from 'rxjs';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
-import { FormGroup, FormControl } from '@angular/forms';
+import { FormGroup, FormControl, Validators, FormGroupDirective, NgForm } from '@angular/forms';
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
@@ -43,8 +43,8 @@ export class LoginComponent implements OnInit, OnDestroy {
 
   //p-password has some styling issues when used in an angular form (the toggleMask icon does not look right)
   loginForm = new FormGroup({
-    email: new FormControl(''),
-    password: new FormControl(''),
+    email: new FormControl('', [Validators.required, Validators.email]),
+    password: new FormControl('', [Validators.required]),
   });
 
   constructor(
@@ -54,11 +54,11 @@ export class LoginComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
-    // this.config = this.configService.config;
     this.config = this.configService.getConfig();
     this.subscription = this.configService.configUpdate$.subscribe(config => {
       this.config = config;
     });
+    console.log(this.loginForm)
   }
 
   ngOnDestroy(): void {
@@ -68,7 +68,9 @@ export class LoginComponent implements OnInit, OnDestroy {
   }
 
   signin() {
-    this.router.navigate(['pages']);
+    this.authService.signin(this.loginForm.controls.email.value, this.loginForm.controls.password.value).subscribe((data) => {
+      if (data) this.router.navigate(['pages'])
+    })
   }
 
 }

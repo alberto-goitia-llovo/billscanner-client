@@ -97,6 +97,8 @@ import { TreeModule } from 'primeng/tree';
 import { TreeSelectModule } from 'primeng/treeselect';
 import { TreeTableModule } from 'primeng/treetable';
 import { VirtualScrollerModule } from 'primeng/virtualscroller';
+import { MessageService } from 'primeng/api';
+
 
 //HELPERS
 import { JwtInterceptor } from '../helpers/jwt.interceptor';
@@ -237,6 +239,7 @@ import { LedgerComponent } from './page_content/ledger/ledger.component';
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
     { provide: LocationStrategy, useClass: HashLocationStrategy },
+    MessageService
   ],
   bootstrap: [AppComponent]
 })

@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { Router } from '@angular/router';
 
 import { AuthService } from '../services/auth.service';
-import { AlertService } from '../services/alert.service';
+import { MessageService } from 'primeng/api';
 
 @Injectable({
   providedIn: 'root'
@@ -14,7 +14,7 @@ export class AuthGuard implements CanActivate {
   constructor(
     private authService: AuthService,
     private router: Router,
-    private alertService: AlertService
+    private messageService: MessageService
   ) { }
 
   canActivate(
@@ -29,7 +29,8 @@ export class AuthGuard implements CanActivate {
       return true;
     }
 
-    this.alertService.queueAlert("Login required", "info");
+    // this.alertService.queueAlert("Login required", "info");
+    this.messageService.add({ key: 'tst', severity: 'info', summary: 'Login required', detail: '' });
     // not logged in so redirect to login page with the return url
     this.router.navigate(['/login'], { queryParams: { returnUrl: state.url } });
     return false;

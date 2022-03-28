@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 import { RestService } from './rest.service';
-import { AlertService } from './alert.service';
 import { Observable, of, BehaviorSubject } from 'rxjs';
 import { catchError, map, tap } from 'rxjs/operators';
 import { LoggerService } from './logger.service';
 import { Router } from '@angular/router';
+import { MessageService } from 'primeng/api';
 
 const handledErrorMessages: any = {
   "User already exists": { message: 'This user already exists. Please login.' },
@@ -23,7 +23,7 @@ export class AuthService {
 
   constructor(
     private rest: RestService,
-    private alerter: AlertService,
+    private messageService: MessageService,
     private router: Router
   ) {
     this.currentUserSubject = new BehaviorSubject<any>(localStorage.getItem('currentUser'));
@@ -55,7 +55,6 @@ export class AuthService {
 
   logout() {
     // remove user from local storage to log user out
-    console.log("Estoy haciendo un logout")
     localStorage.removeItem('currentUser');
     localStorage.removeItem('token');
     this.currentUserSubject.next(null);
@@ -65,9 +64,7 @@ export class AuthService {
 
   storeCredentials(data: any) {
     let user = data?.data?.user;
-    console.log('STORE user', user)
     let token = data?.data?.token;
-    console.log('STORE token', token)
     localStorage.setItem('currentUser', JSON.stringify(user));
     localStorage.setItem('token', token);
     this.currentUserSubject.next(user);
@@ -86,11 +83,16 @@ export class AuthService {
 
   private handleError<T>(result?: T) {
     return (error: any): Observable<T> => {
+      console.log("SE HA DETECTADO UN ERROR")
       console.error(error); // log to console instead
+      console.log(error)
+      console.log(error.message)
+      console.log('error?.error?.message', error?.error?.message)
       if (handledErrorMessages[error?.error?.message]) {
-        this.alerter.queueAlert(handledErrorMessages[error?.error?.message].message, 'error')
+        console.log("mandando un mensagitoooo")
+        this.messageService.add({ key: 'tst', severity: 'error', summary: 'Authentication error', detail: handledErrorMessages[error?.error?.message].message });
       } else {
-        this.alerter.queueAlert("An error has occurred", 'error')
+        this.messageService.add({ key: 'tst', severity: 'error', summary: 'An error has occurred', detail: '' });
       }
       // Let the app keep running by returning an empty result.
       return of(result as T);
