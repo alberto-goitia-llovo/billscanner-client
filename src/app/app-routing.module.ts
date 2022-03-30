@@ -7,7 +7,8 @@ import { DashboardComponent } from './page_content/dashboard/dashboard.component
 import { CategoriesComponent } from './page_content/categories/categories.component';
 import { AccountsComponent } from './page_content/accounts/accounts.component';
 import { ObjectivesComponent } from './page_content/objectives/objectives.component';
-import { LedgerComponent } from './page_content/ledger/ledger.component';
+import { MyBillsComponent } from './page_content/my-bills/my-bills.component';
+import { UploadBillsComponent } from './page_content/upload-bills/upload-bills.component';
 
 const routes: Routes = [
   {
@@ -15,7 +16,8 @@ const routes: Routes = [
     children: [
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
       { path: 'dashboard', component: DashboardComponent },
-      { path: 'ledger', component: LedgerComponent },
+      { path: 'my-bills', component: MyBillsComponent },
+      { path: 'upload-bills', component: UploadBillsComponent },
       { path: 'categories', component: CategoriesComponent },
       { path: 'accounts', component: AccountsComponent },
       { path: 'objectives', component: ObjectivesComponent },

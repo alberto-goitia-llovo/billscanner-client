@@ -4,7 +4,8 @@ import { AppConfig } from '../../interfaces/appconfig';
 import { Subscription } from 'rxjs';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
-import { FormGroup, FormControl, Validators, FormGroupDirective, NgForm } from '@angular/forms';
+import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { MessageService } from 'primeng/api'
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
@@ -50,7 +51,8 @@ export class LoginComponent implements OnInit, OnDestroy {
   constructor(
     public configService: ConfigService,
     public router: Router,
-    public authService: AuthService
+    public authService: AuthService,
+    public messageService: MessageService,
   ) { }
 
   ngOnInit(): void {
@@ -58,7 +60,6 @@ export class LoginComponent implements OnInit, OnDestroy {
     this.subscription = this.configService.configUpdate$.subscribe(config => {
       this.config = config;
     });
-    console.log(this.loginForm)
   }
 
   ngOnDestroy(): void {
@@ -69,7 +70,11 @@ export class LoginComponent implements OnInit, OnDestroy {
 
   signin() {
     this.authService.signin(this.loginForm.controls.email.value, this.loginForm.controls.password.value).subscribe((data) => {
-      if (data) this.router.navigate(['pages'])
+      if (data) {
+        console.log('data', data)
+        this.router.navigate(['pages']);
+        // this.messageService.add({ key: 'tst', severity: 'info', summary: 'success', detail: `Wecome ${data.name}` });
+      }
     })
   }
 

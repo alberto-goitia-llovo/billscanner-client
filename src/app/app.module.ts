@@ -122,8 +122,9 @@ import { DashboardComponent } from './page_content/dashboard/dashboard.component
 import { AccountsComponent } from './page_content/accounts/accounts.component';
 import { CategoriesComponent } from './page_content/categories/categories.component';
 import { ObjectivesComponent } from './page_content/objectives/objectives.component';
-import { LedgerComponent } from './page_content/ledger/ledger.component';
-
+import { MyBillsComponent } from './page_content/my-bills/my-bills.component';
+import { UploadBillsComponent } from './page_content/upload-bills/upload-bills.component';
+import { UploadFileComponent } from './page_content/upload-bills/upload-file/upload-file.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -138,7 +139,9 @@ import { LedgerComponent } from './page_content/ledger/ledger.component';
     AccountsComponent,
     CategoriesComponent,
     ObjectivesComponent,
-    LedgerComponent,
+    MyBillsComponent,
+    UploadBillsComponent,
+    UploadFileComponent,
   ],
   imports: [
     BrowserModule,

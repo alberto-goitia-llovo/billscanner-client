@@ -28,7 +28,8 @@ export class AppMenuComponent implements OnInit {
                 label: "Menu",
                 items: [
                     { label: 'Dashboard', icon: 'pi pi-fw pi-chart-pie', routerLink: ['/pages/dashboard'] },
-                    { label: 'Ledger', icon: 'pi pi-fw pi-book', routerLink: ['/pages/ledger'] },
+                    { label: 'My Bills', icon: 'pi pi-fw pi-money-bill', routerLink: ['/pages/my-bills'] },
+                    { label: 'Upload Bills', icon: 'pi pi-fw pi-upload', routerLink: ['/pages/upload-bills'] },
                     { label: 'Categories', icon: 'pi pi-fw pi-hashtag', routerLink: ['/pages/categories'] },
                     { label: 'Objectives', icon: 'pi pi-fw pi-chart-line', routerLink: ['/pages/objectives'] },
                     { label: 'Accounts', icon: 'pi pi-fw pi-credit-card', routerLink: ['/pages/accounts'] },
