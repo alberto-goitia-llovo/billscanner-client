@@ -69,13 +69,13 @@ export class LoginComponent implements OnInit, OnDestroy {
   }
 
   signin() {
-    this.authService.signin(this.loginForm.controls.email.value, this.loginForm.controls.password.value).subscribe((data) => {
-      if (data) {
-        console.log('data', data)
-        this.router.navigate(['pages']);
-        // this.messageService.add({ key: 'tst', severity: 'info', summary: 'success', detail: `Wecome ${data.name}` });
-      }
-    })
+    this.router.navigate(['pages']);
+    // this.authService.signin(this.loginForm.controls.email.value, this.loginForm.controls.password.value).subscribe((data) => {
+    //   if (data) {
+    //     console.log('data', data)
+    //     this.router.navigate(['pages']);
+    //   }
+    // })
   }
 
 }
