@@ -11,7 +11,7 @@ import { MessageService } from 'primeng/api';
     }
 
     #drop-area:hover {
-      border-width: 0.4rem;
+      border: 0.4rem dashed var(--primary-color);;
     }
       #drop-area i {
         font-size: 5rem;
@@ -43,7 +43,7 @@ export class DragNDropComponent implements OnInit {
     evt.preventDefault();
     evt.stopPropagation();
     let element = document.getElementById("drop-area");
-    if (element) element.style.border = "0.4rem dotted var(--primary-color)"
+    if (element) element.style.border = "0.4rem dashed var(--primary-color)"
   }
 
   @HostListener('dragleave', ['$event']) public onDragLeave(evt) {
@@ -56,6 +56,8 @@ export class DragNDropComponent implements OnInit {
   @HostListener('drop', ['$event']) public onDrop(evt) {
     evt.preventDefault();
     evt.stopPropagation();
+    let element = document.getElementById("drop-area");
+    if (element) element.style.border = "0.25rem dotted var(--primary-color)"
     let files = evt.dataTransfer.files;
     let valid_files: Array<File> = files;
     this.fileChange.emit(valid_files[0]);
