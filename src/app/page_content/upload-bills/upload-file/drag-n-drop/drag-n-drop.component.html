@@ -1,7 +1,9 @@
-<div id="drop-area" class="d-flex flex-column justify-content-center align-items-center card">
+<div id="drop-area" (click)="browseFiles()" class="d-flex flex-column justify-content-center align-items-center card">
     <i class="pi pi-upload"></i>
     <h1 class="text-center">Drag and drop file here</h1>
     <h3 class="text-center">or</h3>
-    <button pButton pRipple type="button" class="p-button-rounded p-button-raised" (click)="emitFileName()">Browse
+    <button pButton pRipple type="button" class="p-button-rounded p-button-raised">Browse
         Files</button>
+
+    <input hidden id="fileinput" type="file" (change)="handleFileInput($event)">
 </div>
