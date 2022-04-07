@@ -69,6 +69,7 @@ export class UploadBillsComponent implements OnInit {
         try {
           const csv = reader.result;
           let result = this.csvService.parse(csv, this.delimiter);
+          //TODO: add custom date format, csv delimiter and decimal separator
           let { convertedData, errors } = this.csvService.convertValidate(result);
           this.errors = errors;
           if (errors.length > 0) {
@@ -86,6 +87,7 @@ export class UploadBillsComponent implements OnInit {
   }
 
   async upload(fileObject) {
+    //!TODO upload to server
     console.log('fileObject', fileObject)
     return;
   }
