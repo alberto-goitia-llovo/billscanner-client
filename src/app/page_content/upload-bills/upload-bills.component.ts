@@ -22,12 +22,17 @@ export class UploadBillsComponent implements OnInit {
   delimiter: delimiterType = ";";
   decimalSeparator: decimalSeparatorType = ",";
 
+  errors: any[] = [];
+  msgs: { severity: string, summary: string, detail: string }[] = [];
+
+  fileready = false;
+
   ngOnInit(): void {
 
   }
 
-  onFileChange(file: File) {
-    console.log('file', file)
+  async onFileChange(file: File) {
+    this.fileready = false;
     let wrongtype = file.type != this.FILE_TYPE;
     let toobig = file.size > this.FILE_SIZE_LIMIT * 1024 * 1024;
     if (wrongtype) this.messageService.add({ key: 'tst', severity: 'error', summary: 'Error', detail: 'File type is not supported, .csv files only' });
@@ -37,8 +42,12 @@ export class UploadBillsComponent implements OnInit {
       return;
     }
     this.file = file;
-    this.messageService.add({ key: 'tst', severity: 'info', summary: 'File Uploaded', detail: '' });
-    this.readFile(file);
+    let fileObject = await this.readFile(file);
+    if (fileObject) {
+      await this.upload(fileObject);
+      this.msgs = [];
+      this.msgs.push({ severity: 'success', summary: 'Upload', detail: 'The file was uploaded successfully' });
+    }
   }
 
   discardFile() {
@@ -53,14 +62,32 @@ export class UploadBillsComponent implements OnInit {
   }
 
   readFile(file) {
-    const reader: FileReader = new FileReader();
-    reader.readAsText(file);
-    reader.onload = e => {
-      const csv = reader.result;
-      let result = this.csvService.parse(csv, this.delimiter);
-      let validation_result = this.csvService.validate(result);
-      console.log('result', result)
-    }
+    return new Promise((resolve) => {
+      const reader: FileReader = new FileReader();
+      reader.readAsText(file);
+      reader.onload = e => {
+        try {
+          const csv = reader.result;
+          let result = this.csvService.parse(csv, this.delimiter);
+          let { convertedData, errors } = this.csvService.convertValidate(result);
+          this.errors = errors;
+          if (errors.length > 0) {
+            this.msgs = [];
+            this.msgs.push({ severity: 'error', summary: 'Error', detail: 'The file contains errors' });
+            resolve(null)
+          } else {
+            resolve(convertedData)
+          }
+        } catch (error) {
+          resolve(null)
+        }
+      }
+    })
+  }
+
+  async upload(fileObject) {
+    console.log('fileObject', fileObject)
+    return;
   }
 
 }
