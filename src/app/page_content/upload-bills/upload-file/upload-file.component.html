@@ -1,5 +1,0 @@
-<div class="d-flex flex-column justify-content-center align-items-center">
-    <app-drag-n-drop [(file)]="file" (fileChange)='onFileChange($event)'></app-drag-n-drop>
-    <h3 *ngIf="file" class="text-center">{{file ? file.name : ''}}</h3>
-    <button *ngIf="file" pButton pRipple type="button" class="p-button-rounded p-button-raised">Upload File</button>
-</div>

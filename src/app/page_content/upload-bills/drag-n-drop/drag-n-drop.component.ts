@@ -32,6 +32,8 @@ export class DragNDropComponent implements OnInit {
 
   handleFileInput(event) {
     this.fileChange.emit(this.file = event.target.files[0]);
+    //emptying the input for allowing to upload the same file again
+    (<HTMLInputElement>document.getElementById("fileinput")).value = '';
   }
 
   browseFiles() {

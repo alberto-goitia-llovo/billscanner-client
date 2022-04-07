@@ -1,1 +1,14 @@
-<app-upload-file></app-upload-file>
+<div class="d-flex flex-column justify-content-center align-items-center">
+    <button pButton pRipple type="button" class="p-button-rounded p-button-raised mb-5"
+        (click)="downloadTemplate()">Download
+        Template</button>
+    <app-drag-n-drop [(file)]="file" (fileChange)='onFileChange($event)'></app-drag-n-drop>
+    <h3 *ngIf="file" class="text-center">{{file ? file.name : ''}}</h3>
+    <div *ngIf="file" class="text-center">
+        <button pButton pRipple type="button" class="p-button-rounded p-button-raised p-button-success m-1">Upload
+            File</button>
+        <button pButton pRipple type="button" class="p-button-rounded p-button-raised p-button-danger m-1"
+            (click)="discardFile()">Discard
+            File</button>
+    </div>
+</div>
