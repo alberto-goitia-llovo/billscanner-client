@@ -4,7 +4,8 @@
         Template</button>
     <app-drag-n-drop [(file)]="file" (fileChange)='onFileChange($event)'></app-drag-n-drop>
     <h3 *ngIf="file" class="text-center">{{file ? file.name : ''}}</h3>
-    <p-messages [value]="msgs"></p-messages>
+    <!-- <p-messages [value]="msgs"></p-messages> -->
+    <p-messages key="messages"></p-messages>
     <div *ngIf="errors.length" class="card m-2">
         <h3>Error List</h3>
         <p-table [value]="errors" [paginator]="true" [rows]="5" responsiveLayout="scroll">

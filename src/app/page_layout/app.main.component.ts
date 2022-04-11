@@ -2,7 +2,7 @@ import { Component, AfterViewInit, OnDestroy, Renderer2, OnInit } from '@angular
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { AppComponent } from '../app.component';
 import { ConfigService } from '../../services/app.config.service';
-import { AppConfig } from '../../interfaces/appconfig';
+import { IAppConfig } from '../../interfaces/appconfig.interface';
 import { Subscription } from 'rxjs';
 
 @Component({
@@ -49,7 +49,7 @@ export class AppMainComponent implements AfterViewInit, OnDestroy, OnInit {
 
     configClick: boolean;
 
-    config: AppConfig;
+    config: IAppConfig;
 
     subscription: Subscription;
 

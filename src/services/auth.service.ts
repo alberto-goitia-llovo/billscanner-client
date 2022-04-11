@@ -4,7 +4,7 @@ import { Observable, of, BehaviorSubject } from 'rxjs';
 import { catchError, map, tap } from 'rxjs/operators';
 import { LoggerService } from './logger.service';
 import { Router } from '@angular/router';
-import { MessageService } from 'primeng/api';
+import { NotificationService } from './notification.service';
 
 const handledErrorMessages: any = {
   "User already exists": { message: 'This user already exists. Please login.' },
@@ -23,7 +23,7 @@ export class AuthService {
 
   constructor(
     private rest: RestService,
-    private messageService: MessageService,
+    private notificationService: NotificationService,
     private router: Router
   ) {
     this.currentUserSubject = new BehaviorSubject<any>(localStorage.getItem('currentUser'));
@@ -33,7 +33,7 @@ export class AuthService {
   }
 
   signin(email: string, password: string): Observable<any> {
-    return this.rest.post('/api/auth/signin', { email, password })
+    return this.rest.post('/auth/signin', { email, password })
       .pipe(
         map((data: any) => {
           return this.storeCredentials(data);
@@ -44,7 +44,7 @@ export class AuthService {
 
 
   signup(name: string, email: string, password: string): Observable<any> {
-    return this.rest.post('/api/auth/signup', { name, email, password })
+    return this.rest.post('/auth/signup', { name, email, password })
       .pipe(
         map((data: any) => {
           return this.storeCredentials(data);
@@ -83,16 +83,10 @@ export class AuthService {
 
   private handleError<T>(result?: T) {
     return (error: any): Observable<T> => {
-      console.log("SE HA DETECTADO UN ERROR")
-      console.error(error); // log to console instead
-      console.log(error)
-      console.log(error.message)
-      console.log('error?.error?.message', error?.error?.message)
       if (handledErrorMessages[error?.error?.message]) {
-        console.log("mandando un mensagitoooo")
-        this.messageService.add({ key: 'tst', severity: 'error', summary: 'Authentication error', detail: handledErrorMessages[error?.error?.message].message });
+        this.notificationService.toast.error('Authentication error', handledErrorMessages[error?.error?.message].message);
       } else {
-        this.messageService.add({ key: 'tst', severity: 'error', summary: 'An error has occurred', detail: '' });
+        this.notificationService.toast.error("Somenthing was wrong")
       }
       // Let the app keep running by returning an empty result.
       return of(result as T);

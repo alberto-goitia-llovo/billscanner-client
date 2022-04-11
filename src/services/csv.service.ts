@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { DateTime } from 'luxon';
+import { IBill } from '../interfaces/bills.interface';
 import * as _ from 'lodash';
 
 export type decimalSeparatorType = "." | ",";
@@ -52,7 +53,7 @@ export class CsvService {
     return result;
   }
 
-  convertValidate(data, formats = { date: 'yyyy-MM-dd' }): { errors: any[], convertedData: any[] } {
+  convertValidate(data, formats = { date: 'yyyy-MM-dd' }): { errors: any[], convertedData: IBill[] } {
     let errors: { row: number, info: string }[] = [];
     let convertedData = _.cloneDeep(data);
 

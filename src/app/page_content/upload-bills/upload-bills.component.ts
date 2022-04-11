@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { MessageService } from 'primeng/api';
 import { CsvService, delimiterType, decimalSeparatorType } from '../../../services/csv.service';
+import { BillsService } from 'src/services/bills.service';
+import { IBill } from 'src/interfaces/bills.interface';
+import { NotificationService } from 'src/services/notification.service';
 
 @Component({
   selector: 'app-upload-bills',
@@ -11,8 +13,9 @@ import { CsvService, delimiterType, decimalSeparatorType } from '../../../servic
 export class UploadBillsComponent implements OnInit {
 
   constructor(
-    private messageService: MessageService,
-    private csvService: CsvService
+    private csvService: CsvService,
+    private billsService: BillsService,
+    private notificationService: NotificationService
   ) { }
 
   file: File | null
@@ -31,23 +34,28 @@ export class UploadBillsComponent implements OnInit {
 
   }
 
-  async onFileChange(file: File) {
+  onFileChange(file: File) {
+    this.msgs = [];
+    this.notificationService.message.clear('messages');
     this.fileready = false;
     let wrongtype = file.type != this.FILE_TYPE;
     let toobig = file.size > this.FILE_SIZE_LIMIT * 1024 * 1024;
-    if (wrongtype) this.messageService.add({ key: 'tst', severity: 'error', summary: 'Error', detail: 'File type is not supported, .csv files only' });
-    if (toobig) this.messageService.add({ key: 'tst', severity: 'error', summary: 'Error', detail: 'File size is too big' });
+    if (wrongtype) this.notificationService.message.error('Error', 'Wrong file type', 'messages')
+    if (toobig) this.notificationService.message.error('Error', 'File is too big', 'messages')
     if (wrongtype || toobig) {
       this.discardFile();
       return;
     }
     this.file = file;
-    let fileObject = await this.readFile(file);
-    if (fileObject) {
-      await this.upload(fileObject);
-      this.msgs = [];
-      this.msgs.push({ severity: 'success', summary: 'Upload', detail: 'The file was uploaded successfully' });
-    }
+    this.readFile(file)
+      .then((convertedData: IBill[] | null) => {
+        if (!convertedData) return;
+        this.billsService.upload(convertedData).subscribe({
+          next: () => this.notificationService.message.success('Success', 'Bills uploaded successfully', 'messages'),
+          error: () => this.notificationService.message.error('Error', 'Could not upload bills', 'messages')
+        })
+      })
+      .catch(() => this.notificationService.message.error('Error', 'Error uploading bills', 'messages'))
   }
 
   discardFile() {
@@ -62,34 +70,23 @@ export class UploadBillsComponent implements OnInit {
   }
 
   readFile(file) {
-    return new Promise((resolve) => {
+    return new Promise<IBill[] | null>((resolve, reject) => {
       const reader: FileReader = new FileReader();
       reader.readAsText(file);
       reader.onload = e => {
-        try {
-          const csv = reader.result;
-          let result = this.csvService.parse(csv, this.delimiter);
-          //TODO: add custom date format, csv delimiter and decimal separator
-          let { convertedData, errors } = this.csvService.convertValidate(result);
-          this.errors = errors;
-          if (errors.length > 0) {
-            this.msgs = [];
-            this.msgs.push({ severity: 'error', summary: 'Error', detail: 'The file contains errors' });
-            resolve(null)
-          } else {
-            resolve(convertedData)
-          }
-        } catch (error) {
-          resolve(null)
+        const csv = reader.result;
+        let result = this.csvService.parse(csv, this.delimiter);
+        //TODO: add custom date formats, csv column delimiter and decimal separator
+        let { convertedData, errors } = this.csvService.convertValidate(result);
+        this.errors = errors;
+        if (errors.length > 0) {
+          this.notificationService.message.error('Error', 'The file contains errors', 'messages')
+          resolve(null);
+        } else {
+          resolve(convertedData)
         }
       }
     })
-  }
-
-  async upload(fileObject) {
-    //!TODO upload to server
-    console.log('fileObject', fileObject)
-    return;
   }
 
 }

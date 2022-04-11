@@ -30,7 +30,7 @@ export class AuthGuard implements CanActivate {
     }
 
     // this.alertService.queueAlert("Login required", "info");
-    this.messageService.add({ key: 'tst', severity: 'info', summary: 'Login required', detail: '' });
+    this.messageService.add({ key: 'globaltoast', severity: 'info', summary: 'Login required', detail: '' });
     // not logged in so redirect to login page with the return url
     this.router.navigate(['/login'], { queryParams: { returnUrl: state.url } });
     return false;

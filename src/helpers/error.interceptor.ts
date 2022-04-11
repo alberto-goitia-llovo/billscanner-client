@@ -33,7 +33,7 @@ export class ErrorInterceptor implements HttpInterceptor {
             const error = err.error.message || err.statusText;
             let alert = HANDLED_ALERTS[error];
             if (alert) {
-                this.messageService.add({ key: 'tst', severity: alert.type, summary: '', detail: alert.message });
+                this.messageService.add({ key: 'globaltoast', severity: alert.type, summary: '', detail: alert.message });
             }
 
             return throwError(() => err);

@@ -1,1 +1,4 @@
 <p>dashboard works!</p>
+<p-button (click)="changeData()">Change Data parent</p-button>
+<app-child [data]="inputData" [(filter)]="filter"></app-child>
+<app-child2 [filter]="filter"></app-child2>

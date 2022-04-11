@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ConfigService } from '../../services/app.config.service';
-import { AppConfig } from '../../interfaces/appconfig';
+import { IAppConfig } from '../../interfaces/appconfig.interface';
 import { Subscription } from 'rxjs';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
@@ -36,7 +36,7 @@ import { MessageService } from 'primeng/api'
 export class LoginComponent implements OnInit, OnDestroy {
   password: string;
 
-  config: AppConfig;
+  config: IAppConfig;
 
   email: string;
 

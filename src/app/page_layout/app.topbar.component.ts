@@ -3,7 +3,7 @@ import { AppMainComponent } from './app.main.component';
 import { Subscription, BehaviorSubject } from 'rxjs';
 import { MenuItem } from 'primeng/api';
 import { ConfigService } from '../../services/app.config.service';
-import { AppConfig } from '../../interfaces/appconfig';
+import { IAppConfig } from '../../interfaces/appconfig.interface';
 
 @Component({
     selector: 'app-topbar',
@@ -20,7 +20,7 @@ export class AppTopBarComponent {
 
     items: MenuItem[];
     dark_mode: boolean;
-    config: AppConfig;
+    config: IAppConfig;
 
     subscription: Subscription;
 

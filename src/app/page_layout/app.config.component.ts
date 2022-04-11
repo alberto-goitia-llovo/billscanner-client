@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { PrimeNGConfig } from 'primeng/api';
 import { Subscription } from 'rxjs';
-import { AppConfig } from '../../interfaces/appconfig';
+import { IAppConfig } from '../../interfaces/appconfig.interface';
 import { AppComponent } from '../app.component';
 import { AppMainComponent } from './app.main.component';
 import { ConfigService } from '../../services/app.config.service';
@@ -16,7 +16,7 @@ export class AppConfigComponent implements OnInit, OnDestroy {
 
     scales: any[] = [12, 13, 14, 15, 16];
 
-    config: AppConfig;
+    config: IAppConfig;
 
     subscription: Subscription;
 

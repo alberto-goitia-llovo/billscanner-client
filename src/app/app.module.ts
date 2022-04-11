@@ -125,6 +125,8 @@ import { ObjectivesComponent } from './page_content/objectives/objectives.compon
 import { MyBillsComponent } from './page_content/my-bills/my-bills.component';
 import { UploadBillsComponent } from './page_content/upload-bills/upload-bills.component';
 import { DragNDropComponent } from './page_content/upload-bills/drag-n-drop/drag-n-drop.component';
+import { ChildComponent } from './page_content/dashboard/child/child.component';
+import { Child2Component } from './page_content/dashboard/child2/child2.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -142,6 +144,8 @@ import { DragNDropComponent } from './page_content/upload-bills/drag-n-drop/drag
     MyBillsComponent,
     UploadBillsComponent,
     DragNDropComponent,
+    ChildComponent,
+    Child2Component,
   ],
   imports: [
     BrowserModule,
