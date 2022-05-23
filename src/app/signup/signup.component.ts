@@ -7,8 +7,8 @@ import { AuthService } from '../../services/auth.service';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { MessageService } from 'primeng/api'
 @Component({
-  selector: 'app-login',
-  templateUrl: './login.component.html',
+  selector: 'app-signup',
+  templateUrl: './signup.component.html',
   styles: [`
       :host ::ng-deep .p-password input {
         width: 100%;
@@ -31,25 +31,18 @@ import { MessageService } from 'primeng/api'
         margin-right: 1rem;
         color: var(--primary-color) !important;
       }
-
-      body: {
-        overflow: hidden; /* Hide scrollbars */
-      }
   `]
 })
-export class LoginComponent implements OnInit, OnDestroy {
-  password: string;
+export class SignupComponent implements OnInit, OnDestroy {
 
   config: IAppConfig;
-
-  email: string;
-
   subscription: Subscription;
 
   //p-password has some styling issues when used in an angular form (the toggleMask icon does not look right)
-  loginForm = new FormGroup({
+  signupForm = new FormGroup({
     email: new FormControl('', [Validators.required, Validators.email]),
     password: new FormControl('', [Validators.required]),
+    username: new FormControl('', [Validators.required])
   });
 
   constructor(
@@ -72,18 +65,13 @@ export class LoginComponent implements OnInit, OnDestroy {
     }
   }
 
-  goToSignUp() {
-    this.router.navigate(['signup']);
-  }
-
-  signin() {
-    this.router.navigate(['pages']);
-    // this.authService.signin(this.loginForm.controls.email.value, this.loginForm.controls.password.value).subscribe((data) => {
-    //   if (data) {
-    //     console.log('data', data)
-    //     this.router.navigate(['pages']);
-    //   }
-    // })
+  signup() {
+    this.authService.signup(this.signupForm.controls.email.value, this.signupForm.controls.password.value, this.signupForm.controls.username.value).subscribe((data) => {
+      if (data) {
+        console.log('data', data)
+        this.router.navigate(['pages']);
+      }
+    })
   }
 
 }

@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { AuthGuard } from '../helpers/auth.guard';
 import { LoginComponent } from './login/login.component';
+import { SignupComponent } from './signup/signup.component';
 import { AppMainComponent } from './page_layout/app.main.component';
 import { DashboardComponent } from './page_content/dashboard/dashboard.component';
 import { CategoriesComponent } from './page_content/categories/categories.component';
@@ -23,7 +24,8 @@ const routes: Routes = [
       { path: 'objectives', component: ObjectivesComponent },
     ]
   },
-  { path: 'login', component: LoginComponent },
+  { path: 'login', component: LoginComponent, data: { animation: 'LoginPage' } },
+  { path: 'signup', component: SignupComponent, data: { animation: 'SignupPage' } },
   { path: '**', redirectTo: 'login' },
 ]
 

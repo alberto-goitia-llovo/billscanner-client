@@ -108,6 +108,7 @@ import { ErrorInterceptor } from '../helpers/error.interceptor';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { LoginComponent } from './login/login.component';
+import { SignupComponent } from './signup/signup.component';
 
 //PAGE LAYOUT
 import { AppTopBarComponent } from './page_layout/app.topbar.component';
@@ -127,10 +128,12 @@ import { UploadBillsComponent } from './page_content/upload-bills/upload-bills.c
 import { DragNDropComponent } from './page_content/upload-bills/drag-n-drop/drag-n-drop.component';
 import { ChildComponent } from './page_content/dashboard/child/child.component';
 import { Child2Component } from './page_content/dashboard/child2/child2.component';
+
 @NgModule({
   declarations: [
     AppComponent,
     LoginComponent,
+    SignupComponent,
     AppMainComponent,
     AppMenuComponent,
     AppMenuitemComponent,
