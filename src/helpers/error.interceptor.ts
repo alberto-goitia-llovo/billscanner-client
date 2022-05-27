@@ -24,18 +24,11 @@ export class ErrorInterceptor implements HttpInterceptor {
 
     intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
         return next.handle(request).pipe(catchError(err => {
-            console.log('err', err)
-            if (err.status === 401) {
-                // auto logout if 401 response returned from api
-                this.authService.logout();
-            }
-
-            const error = err.error.message || err.statusText;
-            let alert = HANDLED_ALERTS[error];
-            if (alert) {
-                this.messageService.add({ key: 'globaltoast', severity: alert.type, summary: '', detail: alert.message });
-            }
-
+            console.log(err);
+            let message = err.error;
+            if (err.status === 0) message = 'Server is not responding';
+            console.log(message);
+            this.messageService.add({ key: 'globaltoast', severity: 'error', summary: message, detail: '' });
             return throwError(() => err);
         }))
     }

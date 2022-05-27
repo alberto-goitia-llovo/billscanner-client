@@ -32,16 +32,16 @@
                             Password is <strong>required</strong>
                         </div>
                     </div>
-                    <label for=" username1" class="block text-900 text-xl font-medium mb-2">Username</label>
+                    <label for=" name1" class="block text-900 text-xl font-medium mb-2">Username</label>
                     <div class="w-full mb-3">
-                        <input id="username1" type="text" placeholder="Username" pInputText class="w-full"
-                            style="padding:1rem;" formControlName="username">
+                        <input id="name1" type="text" placeholder="Username" pInputText class="w-full"
+                            style="padding:1rem;" formControlName="name">
                         <div class="w-full mb-3 p-error"
-                            *ngIf="signupForm.controls.username.touched && signupForm.controls.username.hasError('username') && !signupForm.controls.username.hasError('required')">
+                            *ngIf="signupForm.controls.name.touched && signupForm.controls.name.hasError('name') && !signupForm.controls.name.hasError('required')">
                             Please enter a valid username
                         </div>
                         <div class="w-full p-error"
-                            *ngIf="signupForm.controls.username.touched && signupForm.controls.username.hasError('required')">
+                            *ngIf="signupForm.controls.name.touched && signupForm.controls.name.hasError('required')">
                             Username is <strong>required</strong>
                         </div>
                     </div>

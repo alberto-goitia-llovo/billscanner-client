@@ -6,12 +6,6 @@ import { LoggerService } from './logger.service';
 import { Router } from '@angular/router';
 import { NotificationService } from './notification.service';
 
-const handledErrorMessages: any = {
-  "User already exists": { message: 'This user already exists. Please login.' },
-  "Invalid Password": { message: 'Invalid password' },
-  "User not registered": { message: 'User not registered' }
-}
-
 @Injectable({
   providedIn: 'root'
 })
@@ -38,7 +32,6 @@ export class AuthService {
         map((data: any) => {
           return this.storeCredentials(data);
         }),
-        catchError(this.handleError())
       )
   }
 
@@ -49,7 +42,6 @@ export class AuthService {
         map((data: any) => {
           return this.storeCredentials(data);
         }),
-        catchError(this.handleError())
       )
   }
 
@@ -63,8 +55,8 @@ export class AuthService {
   }
 
   storeCredentials(data: any) {
-    let user = data?.data?.user;
-    let token = data?.data?.token;
+    let user = data?.user;
+    let token = data?.token;
     localStorage.setItem('currentUser', JSON.stringify(user));
     localStorage.setItem('token', token);
     this.currentUserSubject.next(user);
@@ -78,18 +70,5 @@ export class AuthService {
 
   public get currentTokenValue(): any {
     return this.currentTokenSubject.value;
-  }
-
-
-  private handleError<T>(result?: T) {
-    return (error: any): Observable<T> => {
-      if (handledErrorMessages[error?.error?.message]) {
-        this.notificationService.toast.error('Authentication error', handledErrorMessages[error?.error?.message].message);
-      } else {
-        this.notificationService.toast.error("Somenthing was wrong")
-      }
-      // Let the app keep running by returning an empty result.
-      return of(result as T);
-    };
   }
 }

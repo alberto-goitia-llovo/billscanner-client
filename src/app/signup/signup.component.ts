@@ -42,7 +42,7 @@ export class SignupComponent implements OnInit, OnDestroy {
   signupForm = new FormGroup({
     email: new FormControl('', [Validators.required, Validators.email]),
     password: new FormControl('', [Validators.required]),
-    username: new FormControl('', [Validators.required])
+    name: new FormControl('', [Validators.required]),
   });
 
   constructor(
@@ -66,9 +66,8 @@ export class SignupComponent implements OnInit, OnDestroy {
   }
 
   signup() {
-    this.authService.signup(this.signupForm.controls.email.value, this.signupForm.controls.password.value, this.signupForm.controls.username.value).subscribe((data) => {
+    this.authService.signup(this.signupForm.controls.name.value, this.signupForm.controls.email.value, this.signupForm.controls.password.value).subscribe((data) => {
       if (data) {
-        console.log('data', data)
         this.router.navigate(['pages']);
       }
     })
