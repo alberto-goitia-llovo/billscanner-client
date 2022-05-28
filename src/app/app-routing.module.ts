@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { AuthGuard } from '../helpers/auth.guard';
+import { UserLoggedGuard } from '../helpers/userLogged.guard';
 import { LoginComponent } from './login/login.component';
 import { SignupComponent } from './signup/signup.component';
 import { AppMainComponent } from './page_layout/app.main.component';
@@ -16,12 +16,12 @@ const routes: Routes = [
     path: 'pages', component: AppMainComponent,
     children: [
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
-      { path: 'dashboard', component: DashboardComponent },
-      { path: 'my-bills', component: MyBillsComponent },
-      { path: 'upload-bills', component: UploadBillsComponent },
-      { path: 'categories', component: CategoriesComponent },
-      { path: 'accounts', component: AccountsComponent },
-      { path: 'objectives', component: ObjectivesComponent },
+      { path: 'dashboard', component: DashboardComponent, canActivate: [UserLoggedGuard] },
+      { path: 'my-bills', component: MyBillsComponent, canActivate: [UserLoggedGuard] },
+      { path: 'upload-bills', component: UploadBillsComponent, canActivate: [UserLoggedGuard] },
+      { path: 'categories', component: CategoriesComponent, canActivate: [UserLoggedGuard] },
+      { path: 'accounts', component: AccountsComponent, canActivate: [UserLoggedGuard] },
+      { path: 'objectives', component: ObjectivesComponent, canActivate: [UserLoggedGuard] },
     ]
   },
   { path: 'login', component: LoginComponent, data: { animation: 'LoginPage' } },

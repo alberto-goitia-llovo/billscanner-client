@@ -3,9 +3,6 @@ import { HttpRequest, HttpHandler, HttpEvent, HttpInterceptor } from '@angular/c
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { MessageService } from 'primeng/api';
-
-import { AuthService } from '../services/auth.service';
-
 export type AlertType = "error" | "warn" | "success" | "info";
 export type InterceptedAlerts = {
     [errorMessage: string]: { message: string, type: AlertType }
@@ -18,14 +15,13 @@ const HANDLED_ALERTS: InterceptedAlerts = {
 @Injectable()
 export class ErrorInterceptor implements HttpInterceptor {
     constructor(
-        private authService: AuthService,
         private messageService: MessageService
     ) { }
 
     intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
         return next.handle(request).pipe(catchError(err => {
             console.log(err);
-            let message = err.error;
+            let message = err.error.message;
             if (err.status === 0) message = 'Server is not responding';
             console.log(message);
             this.messageService.add({ key: 'globaltoast', severity: 'error', summary: message, detail: '' });

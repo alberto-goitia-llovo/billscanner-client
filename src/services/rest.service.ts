@@ -24,14 +24,14 @@ export class RestService {
 
 
   get<T>(url: string, params = {}): Observable<T> {
-    let full_url = this.IP_SERVER + this.BASE_ENDPONIT + url;
+    let full_url = this.urlBuilder(url);
     return this.http.get<T>(full_url, { params, headers: this.httpOptions.headers }).pipe(
       tap(_ => this.logger.logWithTime(`GET ${full_url}`)),
     )
   }
 
   post<T>(url: string, body = {}): Observable<T> {
-    let full_url = this.IP_SERVER + this.BASE_ENDPONIT + url;
+    let full_url = this.urlBuilder(url);
     return this.http.post<T>(full_url, body, { headers: this.httpOptions.headers })
       .pipe(
         tap(_ => this.logger.logWithTime(`POST ${full_url}`)),
@@ -39,17 +39,23 @@ export class RestService {
   }
 
   delete<T>(url: string, params = {}): Observable<T> {
-    let full_url = this.IP_SERVER + this.BASE_ENDPONIT + url;
+    let full_url = this.urlBuilder(url);
     return this.http.delete<T>(full_url, { params, headers: this.httpOptions.headers }).pipe(
       tap(_ => this.logger.logWithTime(`DELETE ${full_url}`)),
     )
   }
 
   put<T>(url: string, params = {}): Observable<T> {
-    let full_url = this.IP_SERVER + this.BASE_ENDPONIT + url;
+    let full_url = this.urlBuilder(url);
     return this.http.put<T>(full_url, { params, headers: this.httpOptions.headers }).pipe(
       tap(_ => this.logger.logWithTime(`PUT ${full_url}`)),
     )
+  }
+
+  urlBuilder(url) {
+    if (url[0] === '/') url = url.slice(1);
+    let full_url = this.IP_SERVER + this.BASE_ENDPONIT + url;
+    return full_url;
   }
 
   /**

@@ -3,6 +3,7 @@ import { CsvService, delimiterType, decimalSeparatorType } from '../../../servic
 import { BillsService } from 'src/services/bills.service';
 import { IBill } from 'src/interfaces/bills.interface';
 import { NotificationService } from 'src/services/notification.service';
+import { SyncService } from 'src/services/sync.service';
 
 @Component({
   selector: 'app-upload-bills',
@@ -15,6 +16,7 @@ export class UploadBillsComponent implements OnInit {
   constructor(
     private csvService: CsvService,
     private billsService: BillsService,
+    private syncService: SyncService,
     private notificationService: NotificationService
   ) { }
 
@@ -31,7 +33,12 @@ export class UploadBillsComponent implements OnInit {
   fileready = false;
 
   ngOnInit(): void {
-
+    //Suscribirse al observable de sync
+    let initial_dat = this.syncService.userData.value;
+    console.log('initial_dat', initial_dat)
+    this.syncService.userData.subscribe(data => {
+      console.log('data from UPDLOAD', data)
+    })
   }
 
   onFileChange(file: File) {
