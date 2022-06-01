@@ -12,12 +12,14 @@
             <ng-template pTemplate="header">
                 <tr>
                     <th>Row</th>
+                    <th>Value</th>
                     <th>Info</th>
                 </tr>
             </ng-template>
             <ng-template pTemplate="body" let-error>
                 <tr>
                     <td style="min-width: 7rem;">{{error.row}}</td>
+                    <td style="min-width: 8rem;">{{error.value}}</td>
                     <td style="min-width: 8rem;">{{error.info}}</td>
                 </tr>
             </ng-template>

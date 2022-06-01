@@ -1,37 +1,46 @@
 import { Injectable } from '@angular/core';
 import { RestService } from './rest.service';
-import { IBill } from '../interfaces/bills.interface';
+import { IBillDTO } from '../interfaces/bills.interface';
 import { catchError, map } from 'rxjs/operators';
 import { NotificationService } from './notification.service';
 import { CredentialsService } from './credentials.service';
-import { Subject, BehaviorSubject } from 'rxjs';
+import { Subject, BehaviorSubject, Observable, Subscription, of } from 'rxjs';
+import { ISync } from '../interfaces/sync.interface';
 import * as _ from 'lodash';
+
+
 
 @Injectable({
     providedIn: 'root'
 })
 export class SyncService {
-    userData: BehaviorSubject<any> = new BehaviorSubject(JSON.parse(localStorage.getItem('userData') || '{}') || {});
+    syncData$: BehaviorSubject<ISync | {}> = new BehaviorSubject(JSON.parse(localStorage.getItem('syncData') || '{}'));
     constructor(
         private restService: RestService,
         private credentialsService: CredentialsService,
         private notificationService: NotificationService
     ) {
         let user_logged = !!this.credentialsService.currentUserValue;
-        if (user_logged && _.isEmpty(this.userData.value)) {
-            this.updateUserData();
-        }
+        this.updateSyncData$().subscribe();
+
+        // if (user_logged && _.isEmpty(this.syncData.value)) {
+        //     console.log(`Updating user data`)
+        //     this.updatesyncData().subscribe();
+        // }
     }
 
-    updateUserData() {
-        return this.restService.get('/sync/getUserData')
-            .subscribe({
-                next: (data) => {
-                    console.log('data updated', data)
-                    localStorage.setItem('userData', JSON.stringify(data));
-                    this.userData.next(data)
-                },
-                error: (err) => { this.notificationService.toast.error('Error', 'Could not update user data') }
+    updateSyncData$(): Observable<ISync | {}> {
+        return this.restService.get('/sync/getSyncData').pipe(
+            map((data: any) => {
+                // console.log('data updated', data)
+                localStorage.setItem('syncData', JSON.stringify(data));
+                this.syncData$.next(data)
+                return data;
+            }),
+            catchError((err) => {
+                this.notificationService.toast.error('Error', 'Could not update user data')
+                return of({});
             })
+        );
     }
 }
