@@ -67,13 +67,6 @@ export class CsvService {
         //No validator for allowing the user not to specify category. In which case, it will be set to default categories
       }
     },
-    "Bill Type": {
-      type: 'string',
-      schema: {
-        typeConverter: (value) => String(value).trim().toLocaleLowerCase(),
-        //No validator for allowing the user not to specify bill type. In which case, it will be set to default bill (positive amount income, negative amount expense)
-      }
-    },
     "Account Name": {
       type: 'string',
       schema: {
@@ -88,6 +81,13 @@ export class CsvService {
         //No validator because any data can be entered in the details field
       }
     },
+    "Bill Type": {
+      type: 'string',
+      schema: {
+        typeConverter: (value) => String(value).trim().toLocaleLowerCase(),
+        //No validator for allowing the user not to specify bill type. In which case, it will be set to default bill (positive amount income, negative amount expense)
+      }
+    }
   }
 
 
@@ -130,7 +130,12 @@ export class CsvService {
     let account_hash = {};
     for (let account of syncData.accounts) account_hash[String(account.name).trim().toUpperCase()] = account;
     let category_hash = {};
-    for (let category of syncData.categories) category_hash[String(category.name).trim().toUpperCase()] = category;
+    for (let category of syncData.categories) {
+      let name = String(category.name).trim().toUpperCase();
+      if (!category_hash[name]) category_hash[name] = {};
+      if (!category_hash[name][category.type]) category_hash[name][category.type] = {};
+      category_hash[name][category.type] = category;
+    }
 
     loop1:
     for (let row = 1; row < data.length; row++) {
@@ -141,8 +146,9 @@ export class CsvService {
         let schema = this.VALUE_TYPES[schema_headers[column]].schema;
         let convertedValue = schema.typeConverter(value, formats[type]);
         convertedData[row][schema_headers[column]] = convertedValue;
+        data[row][schema_headers[column]] = convertedValue;
 
-        if (schema.validator ? !schema.validator(schema.typeConverter(value, formats[type])) : false) {
+        if (schema.validator ? !schema.validator(convertedValue) : false) {
           errors.push({
             row: row + 2,
             value: value,
@@ -178,12 +184,13 @@ export class CsvService {
 
       //Validate categories (and set defaults)
       let category_name = data[row]['Category'];
+      console.log('category_name', category_name)
       if (!category_hash[category_name]) {
         if (category_name == '') {
           //Category not specified, default value is assigned
-          let amount = data[row]['Amount'];
-          data[row]['Category'] = amount > 0 ? 'Other incomes' : 'Other expenses';
+          data[row]['Category'] = 'OTHER';
         } else {
+          console.log('category_name', category_name)
           errors.push({
             row: row + 2,
             value: '-',
