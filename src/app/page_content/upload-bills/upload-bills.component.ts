@@ -5,7 +5,7 @@ import { IBillDTO } from 'src/interfaces/bills.interface';
 import { NotificationService } from 'src/services/notification.service';
 import { SyncService } from 'src/services/sync.service';
 import { AccountService } from 'src/services/accounts.service';
-import { forkJoin, mergeMap } from 'rxjs';
+import { forkJoin, mergeMap, of } from 'rxjs';
 
 @Component({
   selector: 'app-upload-bills',
@@ -42,7 +42,6 @@ export class UploadBillsComponent implements OnInit {
       this.syncData = data;
     })
     this.syncData = this.syncService.syncData$.value;
-    console.log('this.syncData', this.syncData)
   }
 
   onFileChange(file: File) {
@@ -60,14 +59,18 @@ export class UploadBillsComponent implements OnInit {
     this.file = file;
     this.readFile(file)
       .then(({ convertedData, new_accounts }) => {
-        console.log('acounts', new_accounts)
+        console.log('new_accounts', new_accounts)
         console.log('convertedData', convertedData)
-        return;
         if (!convertedData) return;
-        this.accountService.createAccounts(new_accounts)
-          .pipe(
-            mergeMap(() => { return this.billsService.upload(convertedData) }),
-          )
+        //If there is any new account we need to create it before uploading the bills
+        let aux$ = this.accountService.createAccounts(new_accounts)
+        if (!new_accounts.length) {
+          aux$ = of(null);
+        }
+        aux$.pipe(
+          mergeMap(() => { return this.billsService.upload(convertedData) }),
+          mergeMap(() => { return this.syncService.updateSyncData$ }),
+        )
           .subscribe({
             next: () => {
               this.notificationService.message.success('Success', 'Bills uploaded successfully', 'messages')
@@ -90,7 +93,7 @@ export class UploadBillsComponent implements OnInit {
   }
 
   readFile(file) {
-    return new Promise<any>((resolve, reject) => {
+    return new Promise<any>((resolve) => {
       const reader: FileReader = new FileReader();
       reader.readAsText(file);
       reader.onload = e => {

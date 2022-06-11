@@ -15,7 +15,6 @@ export class AccountService {
     ) { }
 
     createAccounts(new_accounts: any[]): Observable<any> {
-        return of(null);
-        // return this.restService.post('bills/upload', { bills: bills_array })
+        return this.restService.post('accounts/create', { new_accounts })
     }
 }

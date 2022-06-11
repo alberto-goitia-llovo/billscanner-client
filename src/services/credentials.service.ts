@@ -14,7 +14,7 @@ export class CredentialsService {
   constructor(
     private router: Router
   ) {
-    this.currentUserSubject = new BehaviorSubject<any>(localStorage.getItem('currentUser'));
+    this.currentUserSubject = new BehaviorSubject<any>(JSON.parse(localStorage.getItem('currentUser') || ''));
     this.currentUser = this.currentUserSubject.asObservable();
     this.currentTokenSubject = new BehaviorSubject<any>(String(localStorage.getItem('token')));
     this.currentToken = this.currentTokenSubject.asObservable();

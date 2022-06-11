@@ -17,7 +17,7 @@ export class CsvService {
     private credentialsService: CredentialsService
   ) { }
 
-  BILL_TYPES_HASH = { 'income': true, 'expense': true, 'repayment': true, 'transfer': true, '': true };
+  BILL_TYPES_HASH = { 'income': true, 'expense': true, 'repayment': true, 'transfer': true };
 
 
   // TYPE_VALIDATION_SCHEMA = {
@@ -40,13 +40,18 @@ export class CsvService {
 
   VALUE_TYPES = {
     "Date": {
+      field: 'date',
       type: 'date',
       schema: {
-        typeConverter: (value, format) => DateTime.fromFormat(value, format),
-        validator: (convertedValue) => convertedValue.isValid
+        typeConverter: (value, format) => {
+          let convertedValue = DateTime.fromFormat(value, format);
+          return convertedValue.isValid ? convertedValue.toISODate() : null;
+        },
+        validator: (convertedValue) => !!convertedValue
       }
     },
     "Concept": {
+      field: 'concept',
       type: 'string',
       schema: {
         typeConverter: (value) => String(value).trim(),
@@ -54,6 +59,7 @@ export class CsvService {
       }
     },
     "Amount": {
+      field: 'amount',
       type: 'number',
       schema: {
         typeConverter: (value) => Number(value),
@@ -61,13 +67,15 @@ export class CsvService {
       }
     },
     "Category": {
+      field: 'category',
       type: 'string',
       schema: {
         typeConverter: (value) => String(value).trim().toUpperCase(),
         //No validator for allowing the user not to specify category. In which case, it will be set to default categories
       }
     },
-    "Account Name": {
+    "Account": {
+      field: 'account',
       type: 'string',
       schema: {
         typeConverter: (value) => String(value).trim().toUpperCase(),
@@ -75,6 +83,7 @@ export class CsvService {
       }
     },
     "Details": {
+      field: 'details',
       type: 'string',
       schema: {
         typeConverter: (value) => String(value).trim(),
@@ -82,9 +91,10 @@ export class CsvService {
       }
     },
     "Bill Type": {
+      field: 'bill_type',
       type: 'string',
       schema: {
-        typeConverter: (value) => String(value).trim().toLocaleLowerCase(),
+        typeConverter: (value) => value ? String(value).trim().toLocaleLowerCase() : null,
         //No validator for allowing the user not to specify bill type. In which case, it will be set to default bill (positive amount income, negative amount expense)
       }
     }
@@ -107,10 +117,9 @@ export class CsvService {
     return result;
   }
 
-  convertValidate(data, formats = { date: 'yyyy-MM-dd' }, syncData: ISync): { errors: any[], convertedData: IBillDTO[], new_accounts: string[] } {
+  convertValidate(data, formats = { date: 'yyyy-MM-dd' }, syncData: ISync): { errors: any[], convertedData: IBillDTO[] | null, new_accounts: string[] } {
     let errors: { row: number, info: string, value: any }[] = [];
     let new_accounts: string[] = [];
-    let new_categories: string[] = [];
     let convertedData = _.cloneDeep(data);
 
     // Validate header names
@@ -123,12 +132,12 @@ export class CsvService {
           value: headers[i],
           info: `Headers do not match the template`
         });
-        return { convertedData, errors, new_accounts };
+        return { convertedData: null, errors, new_accounts };
       }
     }
 
     let account_hash = {};
-    for (let account of syncData.accounts) account_hash[String(account.name).trim().toUpperCase()] = account;
+    for (let account of syncData.accounts) account_hash[String(account.name).trim().toUpperCase()] = true;
     let category_hash = {};
     for (let category of syncData.categories) {
       let name = String(category.name).trim().toUpperCase();
@@ -138,36 +147,45 @@ export class CsvService {
     }
 
     loop1:
-    for (let row = 1; row < data.length; row++) {
+    for (let row = 0; row < data.length; row++) {
       // Validate data types and convert
       for (let column = 0; column < schema_headers.length; column++) {
-        let value = data[row][schema_headers[column]];
-        let type = this.VALUE_TYPES[schema_headers[column]].type;
-        let schema = this.VALUE_TYPES[schema_headers[column]].schema;
+        let header = schema_headers[column];
+        let value = data[row][header];
+        let type = this.VALUE_TYPES[header].type;
+        let schema = this.VALUE_TYPES[header].schema;
+        let field = this.VALUE_TYPES[header].field;
+        console.log('field', field)
         let convertedValue = schema.typeConverter(value, formats[type]);
-        convertedData[row][schema_headers[column]] = convertedValue;
-        data[row][schema_headers[column]] = convertedValue;
+        delete convertedData[row][header];
+        convertedData[row][field] = convertedValue;
 
         if (schema.validator ? !schema.validator(convertedValue) : false) {
           errors.push({
             row: row + 2,
             value: value,
-            info: `Invalid ${schema_headers[column]}`
+            info: `Invalid ${header}`
           });
           //Go to the next row
           continue loop1;
         }
       }
 
+      console.log('convertedData[row]', convertedData[row])
       //More complex validations
       //Validate accounts and add new ones
-      let account_name = data[row]['Account Name'];
+      let account_name = convertedData[row].account;
       if (!account_hash[account_name]) {
         if (account_name == '') {
-          if (Object.keys(account_hash).length == 0) {
+          if (!syncData.accounts.length) {
             //If the user has no accounts yet a default one will be created
-            let user_name = this.credentialsService.currentUserValue.name;
-            new_accounts.push(`${user_name}'s account`);
+            let user = this.credentialsService.currentUserValue;
+            let new_account = `${user.name}'s account`.toUpperCase();
+            convertedData[row].account = new_account;
+            if (!account_hash[new_account]) {
+              account_hash[new_account] = true;
+              new_accounts.push(new_account);
+            }
           } else {
             //If the user did not specify the account an error will be thrown
             errors.push({
@@ -175,22 +193,21 @@ export class CsvService {
               value: '-',
               info: `Account not specified`
             });
+            continue;
           }
-          continue;
+        } else {
+          new_accounts.push(account_name);
+          account_hash[account_name] = true;
         }
-        new_accounts.push(account_name);
-        account_hash[account_name] = true;
       }
 
       //Validate categories (and set defaults)
-      let category_name = data[row]['Category'];
-      console.log('category_name', category_name)
+      let category_name = convertedData[row].category;
       if (!category_hash[category_name]) {
         if (category_name == '') {
           //Category not specified, default value is assigned
-          data[row]['Category'] = 'OTHER';
+          convertedData[row].category = 'OTHER';
         } else {
-          console.log('category_name', category_name)
           errors.push({
             row: row + 2,
             value: '-',
@@ -200,12 +217,12 @@ export class CsvService {
         }
       }
       //Validate bill types
-      let bill_type = data[row]['Bill Type'];
+      let bill_type = convertedData[row].bill_type;
       if (!this.BILL_TYPES_HASH[bill_type]) {
-        if (this.BILL_TYPES_HASH[bill_type] == '') {
+        if (!bill_type) {
           //Bill type not specified, default value is assigned
-          let amount = data[row]['Amount'];
-          data[row]['Bill Type'] = amount > 0 ? 'income' : 'expense';
+          let amount = convertedData[row].amount;
+          convertedData[row].bill_type = amount > 0 ? 'income' : 'expense';
         } else {
           errors.push({
             row: row + 2,
@@ -214,11 +231,11 @@ export class CsvService {
           })
         }
       }
-      bill_type = data[row]['Bill Type'];
-      category_name = data[row]['Category'];
+      bill_type = convertedData[row].bill_type;
+      category_name = convertedData[row].category;
       if (this.BILL_TYPES_HASH[bill_type]) {
-        let category = category_hash[category_name];
-        if (this.BILL_TYPES_HASH[bill_type] != category.type) {
+        let category = category_hash[category_name][bill_type];
+        if (!category) {
           errors.push({
             row: row + 2,
             value: bill_type,
@@ -227,6 +244,7 @@ export class CsvService {
         }
       }
 
+      //All validated, can be added to the final object
     }
     return { convertedData, errors, new_accounts };
   }

@@ -22,7 +22,7 @@ export class AuthService {
       .pipe(
         map((data: any) => {
           let user = this.credentialsService.storeCredentials(data);
-          this.syncService.updateSyncData$().subscribe();
+          this.syncService.updateSyncData$.subscribe();
           return user;
         }),
       )
@@ -34,7 +34,7 @@ export class AuthService {
       .pipe(
         map((data: any) => {
           let user = this.credentialsService.storeCredentials(data);
-          this.syncService.updateSyncData$().subscribe();
+          this.syncService.updateSyncData$.subscribe();
           return user;
         }),
       )

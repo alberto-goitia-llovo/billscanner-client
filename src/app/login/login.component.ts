@@ -4,6 +4,8 @@ import { IAppConfig } from '../../interfaces/appconfig.interface';
 import { Subscription } from 'rxjs';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
+import { SyncService } from 'src/services/sync.service';
+import { CredentialsService } from 'src/services/credentials.service';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { MessageService } from 'primeng/api'
 @Component({
@@ -57,6 +59,8 @@ export class LoginComponent implements OnInit, OnDestroy {
     public router: Router,
     public authService: AuthService,
     public messageService: MessageService,
+    public syncService: SyncService,
+    public credentialsService: CredentialsService
   ) { }
 
   ngOnInit(): void {
@@ -64,6 +68,15 @@ export class LoginComponent implements OnInit, OnDestroy {
     this.subscription = this.configService.configUpdate$.subscribe(config => {
       this.config = config;
     });
+    let user = this.credentialsService.currentUserValue;
+    let token = this.credentialsService.currentTokenValue;
+    if (user && token) {
+      this.syncService.updateSyncData$.subscribe(data => {
+        if (data) {
+          this.router.navigate(['pages']);
+        }
+      })
+    }
   }
 
   ngOnDestroy(): void {
